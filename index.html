@@ -13,7 +13,22 @@ canvas#particles{position:fixed;inset:0;pointer-events:none;z-index:0}
 .scanlines{position:fixed;inset:0;pointer-events:none;z-index:1;background:repeating-linear-gradient(to bottom,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 6px)}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:100;opacity:0;transition:opacity .3s}
 canvas#confetti.active{opacity:1}
-#flash{position:fixed;inset:0;pointer-events:none;z-index:99;background:#fff;opacity:0}
+#enter-screen{
+  position:fixed;inset:0;z-index:999;
+  background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  cursor:pointer;
+}
+#enter-screen .e-brand{font-family:'Anton',sans-serif;font-size:48px;letter-spacing:.3em;color:var(--gold)}
+#enter-screen .e-sub{font-size:12px;letter-spacing:.3em;color:var(--dim)}
+#enter-screen .e-btn{
+  margin-top:16px;padding:14px 48px;
+  border:1px solid var(--gold);color:var(--gold);
+  font-family:'Anton',sans-serif;font-size:18px;letter-spacing:.2em;
+  background:transparent;cursor:pointer;
+  transition:background .2s,color .2s;
+}
+#enter-screen .e-btn:hover{background:var(--gold);color:#000}
 #venda-overlay{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .3s}
 #venda-overlay.show{opacity:1}
 .venda-text{font-family:'Anton',sans-serif;font-size:min(18vw,200px);color:var(--green);letter-spacing:.05em;text-shadow:0 0 60px rgba(0,255,65,.5);animation:stampIn .35s cubic-bezier(.175,.885,.32,1.275)}
@@ -75,6 +90,12 @@ main{display:flex;align-items:center;padding:40px 60px;gap:60px;min-height:0;ove
 <canvas id="particles"></canvas>
 <div class="scanlines"></div>
 <canvas id="confetti"></canvas>
+<div id="enter-screen">
+  <div class="e-brand">BOARD · ACADEMY</div>
+  <div class="e-sub">PAINEL DE VENDAS</div>
+  <button class="e-btn" onclick="entrar()">ENTRAR</button>
+</div>
+
 <div id="flash"></div>
 <div id="venda-overlay"><div class="venda-text">FECHOOOU!</div></div>
 
@@ -131,7 +152,7 @@ const REFRESH_MS = 180000;
 const F_PRODUTO  = '8bdce76ba66f0fed0280918a4845190c92899ed5';
 const F_QUALIF   = 'a6f13cc27c8d041f3af4091283ce0d4fe0913875';
 const FOTOS_PATH = 'https://raw.githubusercontent.com/negocios87-sketch/fotos_time_comercial/main/';
-const SOM_PATH   = 'https://raw.githubusercontent.com/negocios87-sketch/fotos_time_comercial/main/som/ganho.mp3';
+const SOM_PATH   = '/sons/ganho.mp3';
 const PIPELINE_MAP={31:'DISCOVERY',39:'ORION',46:'OLYMPUS',50:'LATAM',51:'NAVIGATOR',60:'PULSE',64:'PULSE',62:'ATLANTIS',65:'ATLANTIS',66:'ATLANTIS',68:'SPARKS',77:'PIONEER+DISCOVERY',87:'ELITE',88:'SNIPER'};
 
 let qualifMap={};
@@ -147,7 +168,26 @@ function startCountdown(){
 }
 let lastSeenId=localStorage.getItem('lsi')||null;
 
-// CLOCK
+// ENTER — desbloqueia audio e inicia
+function entrar(){
+  const screen=document.getElementById('enter-screen');
+  screen.style.transition='opacity .5s';
+  screen.style.opacity='0';
+  setTimeout(()=>screen.remove(),500);
+  // preload audio — desbloqueia o contexto
+  const a=new Audio(SOM_PATH);
+  a.volume=0;
+  a.play().then(()=>a.pause()).catch(()=>{});
+  iniciar();
+}
+
+let _iniciado=false;
+async function iniciar(){
+  if(_iniciado)return; _iniciado=true;
+  await fetchQualifMap();
+  await tick();
+  setInterval(tick,REFRESH_MS);
+}
 setInterval(()=>{const n=new Date(),p=x=>String(x).padStart(2,'0');document.getElementById('clock').textContent=p(n.getHours())+':'+p(n.getMinutes())+':'+p(n.getSeconds())},1000);
 
 // PARTICLES
@@ -274,7 +314,7 @@ async function tick(){
   startCountdown();
 }
 
-(async()=>{await fetchQualifMap();await tick();setInterval(tick,REFRESH_MS)})();
+// o boot acontece via entrar() ao clicar na tela inicial
 </script>
 </body>
 </html>
