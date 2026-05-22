@@ -186,11 +186,9 @@ function entrar(){
 }
 
 function testSound(){
-  if(audioInstance){
-    audioInstance.currentTime=0;
-    audioInstance.volume=1.0;
-    audioInstance.play().catch(e=>console.warn('Test audio:',e));
-  }
+  const a = new Audio(SOM_PATH);
+  a.volume = 1.0;
+  a.play().then(()=>console.log('Som OK')).catch(e=>console.warn('Erro som:',e));
 }
 
 let _iniciado=false;
