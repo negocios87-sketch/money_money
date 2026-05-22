@@ -94,6 +94,7 @@ main{display:flex;align-items:center;padding:40px 60px;gap:60px;min-height:0;ove
   <div class="e-brand">BOARD · ACADEMY</div>
   <div class="e-sub">PAINEL DE VENDAS</div>
   <button class="e-btn" onclick="entrar()">ENTRAR</button>
+  <button class="e-btn" style="margin-top:8px;font-size:13px;padding:10px 32px;opacity:.5" onclick="testSound()">TESTAR SOM</button>
 </div>
 
 <div id="flash"></div>
@@ -169,16 +170,27 @@ function startCountdown(){
 let lastSeenId=localStorage.getItem('lsi')||null;
 
 // ENTER — desbloqueia audio e inicia
+let audioInstance = null;
 function entrar(){
   const screen=document.getElementById('enter-screen');
   screen.style.transition='opacity .5s';
   screen.style.opacity='0';
   setTimeout(()=>screen.remove(),500);
-  // preload audio — desbloqueia o contexto
-  const a=new Audio(SOM_PATH);
-  a.volume=0;
-  a.play().then(()=>a.pause()).catch(()=>{});
+  audioInstance = new Audio(SOM_PATH);
+  audioInstance.load();
+  audioInstance.play().then(()=>{
+    audioInstance.pause();
+    audioInstance.currentTime=0;
+  }).catch(e=>console.warn('Desbloqueio audio:',e));
   iniciar();
+}
+
+function testSound(){
+  if(audioInstance){
+    audioInstance.currentTime=0;
+    audioInstance.volume=1.0;
+    audioInstance.play().catch(e=>console.warn('Test audio:',e));
+  }
 }
 
 let _iniciado=false;
@@ -204,9 +216,11 @@ function launchConfetti(){
 // SOUND
 function playSound(){
   try{
-    const a=new Audio(SOM_PATH);
-    a.volume=1.0;
-    a.play().catch(e=>console.warn('Audio:',e));
+    if(audioInstance){
+      audioInstance.currentTime=0;
+      audioInstance.volume=1.0;
+      audioInstance.play().catch(e=>console.warn('Audio play:',e));
+    }
   }catch(e){console.warn('Audio:',e)}
 }
 
