@@ -63,7 +63,7 @@ main{display:flex;align-items:center;padding:40px 60px;gap:80px;min-height:0;ove
 @keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
 .pill{display:inline-flex;padding:5px 20px;border-radius:4px;font-size:12px;letter-spacing:.2em;border:1px solid var(--cyan);color:var(--cyan);background:rgba(0,255,255,.06);width:fit-content}
 .lbl{font-size:12px;letter-spacing:.2em;color:var(--dim);margin-top:6px}
-.closer-name{font-family:'Anton',sans-serif;font-size:min(10vw,110px);line-height:1;color:#fff;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.closer-name{font-family:'Anton',sans-serif;font-size:min(6vw,68px);line-height:1.1;color:#fff;letter-spacing:.02em;white-space:normal;overflow:hidden}
 .valor-txt{font-family:'Anton',sans-serif;font-size:min(11vw,120px);line-height:1;color:var(--gold);letter-spacing:-.01em;text-shadow:0 0 50px rgba(255,215,0,.25)}
 .divider{height:1px;background:rgba(255,255,255,.08);margin:6px 0}
 .details{display:flex;flex-direction:column;gap:12px}
@@ -305,7 +305,6 @@ async function updatePanel(deal,isNew){
       ? `${nome} <span style="color:var(--cyan)">&</span> <span style="color:var(--cyan)">${sdrNome}</span>`
       : nome;
   document.getElementById('produto').textContent=produto;
-  document.getElementById('sdr-name').textContent=sdrNome;
   document.getElementById('data-ganho').textContent=fmtDate(deal?.won_time);
 
   const info=document.getElementById('info');
@@ -315,8 +314,12 @@ async function updatePanel(deal,isNew){
   await loadPhoto(nome,document.getElementById('closer-img'),document.getElementById('closer-init'));
 
   const sw=document.getElementById('sdr-slot');
-  if(sdrNome&&sdrNome!=='—'){sw.style.display='flex';await loadPhoto(sdrNome,document.getElementById('sdr-img'),document.getElementById('sdr-init'))}
-  else sw.style.display='none';
+  if(sdrNome&&sdrNome!=='—'){
+    sw.style.display='flex';
+    await loadPhoto(sdrNome,document.getElementById('sdr-img'),document.getElementById('sdr-init'));
+  } else {
+    sw.style.display='none';
+  }
 
   if(isNew)celebrar();
 }
