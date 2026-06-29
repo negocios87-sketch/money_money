@@ -141,7 +141,6 @@ main{display:flex;align-items:center;padding:40px 60px;gap:80px;min-height:0;ove
       <div class="divider"></div>
       <div class="details">
         <div class="drow"><span class="dlbl">PRODUTO</span><span class="dval" id="produto">—</span></div>
-        <div class="drow"><span class="dlbl">SDR</span><span class="dval cyan" id="sdr-name">—</span></div>
         <div class="drow"><span class="dlbl">GANHO EM</span><span class="dval" id="data-ganho">—</span></div>
       </div>
     </div>
@@ -301,7 +300,10 @@ async function updatePanel(deal,isNew){
   const sdrNome=mapOpt(deal?.[F_QUALIF],qualifMap);
 
   document.getElementById('pill').textContent=funil;
-  document.getElementById('closer-name').textContent=nome;
+  document.getElementById('closer-name').innerHTML =
+    sdrNome && sdrNome !== '—'
+      ? `${nome} <span style="color:var(--cyan)">&</span> <span style="color:var(--cyan)">${sdrNome}</span>`
+      : nome;
   document.getElementById('produto').textContent=produto;
   document.getElementById('sdr-name').textContent=sdrNome;
   document.getElementById('data-ganho').textContent=fmtDate(deal?.won_time);
