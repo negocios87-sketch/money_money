@@ -46,16 +46,17 @@ header{display:flex;align-items:center;justify-content:space-between;padding:20p
 /* MAIN */
 main{display:flex;align-items:center;padding:40px 60px;gap:60px;min-height:0;overflow:hidden}
 
-/* FOTO */
-.photo-wrap{flex-shrink:0;position:relative;width:min(58vh,520px);height:min(58vh,520px)}
-.ring-gold{position:absolute;inset:-8px;border-radius:50%;border:4px solid var(--gold);animation:pulse 2.2s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,.45)}50%{box-shadow:0 0 0 18px rgba(255,215,0,.08),0 0 0 36px rgba(255,215,0,.03)}}
-#closer-img,#closer-init{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--gold)}
+/* FOTOS */
+.photos-wrap{flex-shrink:0;display:flex;gap:24px;align-items:flex-start}
+.foto-slot{display:flex;flex-direction:column;align-items:center;gap:10px}
+.foto-slot .lbl-foto{font-size:10px;letter-spacing:.2em;color:var(--dim)}
+.foto-circle{position:relative;width:min(28vh,220px);height:min(28vh,220px)}
+.ring-gold{position:absolute;inset:-6px;border-radius:50%;border:3px solid var(--gold);animation:pulse 2.2s ease-in-out infinite}
+.ring-cyan{position:absolute;inset:-6px;border-radius:50%;border:3px solid var(--cyan);box-shadow:0 0 14px rgba(0,255,255,.2)}
+#closer-img,#closer-init{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--gold)}
 #closer-init{display:none;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:26%;color:var(--gold);background:#111}
-.sdr-wrap{position:absolute;bottom:-12px;right:-24px;width:40%;height:40%;display:none}
-.ring-cyan{position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--cyan);box-shadow:0 0 14px rgba(0,255,255,.25)}
-#sdr-img,#sdr-init{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--cyan)}
-#sdr-init{display:none;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:36%;color:var(--cyan);background:#051515}
+#sdr-img,#sdr-init{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--cyan)}
+#sdr-init{display:none;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:26%;color:var(--cyan);background:#051515}
 
 /* INFO */
 .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;animation:slideIn .5s ease-out}
@@ -114,20 +115,27 @@ main{display:flex;align-items:center;padding:40px 60px;gap:60px;min-height:0;ove
   </header>
 
   <main>
-    <div class="photo-wrap">
-      <div class="ring-gold"></div>
-      <img id="closer-img" src="" alt="" style="display:none">
-      <div id="closer-init" style="display:none"></div>
-      <div class="sdr-wrap" id="sdr-wrap">
-        <div class="ring-cyan"></div>
-        <img id="sdr-img" src="" alt="" style="display:none">
-        <div id="sdr-init" style="display:none"></div>
+    <div class="photos-wrap">
+      <div class="foto-slot">
+        <div class="foto-circle">
+          <div class="ring-gold"></div>
+          <img id="closer-img" src="" alt="" style="display:none">
+          <div id="closer-init" style="display:none"></div>
+        </div>
+        <div class="lbl-foto">CLOSER</div>
+      </div>
+      <div class="foto-slot" id="sdr-slot" style="display:none">
+        <div class="foto-circle">
+          <div class="ring-cyan"></div>
+          <img id="sdr-img" src="" alt="" style="display:none">
+          <div id="sdr-init" style="display:none"></div>
+        </div>
+        <div class="lbl-foto">SDR</div>
       </div>
     </div>
 
     <div class="info" id="info">
       <div class="pill" id="pill">—</div>
-      <div class="lbl">CLOSER</div>
       <div class="closer-name" id="closer-name">—</div>
       <div class="valor-txt" id="valor">R$ —</div>
       <div class="divider"></div>
@@ -304,8 +312,8 @@ async function updatePanel(deal,isNew){
   animateValor(valor);
   await loadPhoto(nome,document.getElementById('closer-img'),document.getElementById('closer-init'));
 
-  const sw=document.getElementById('sdr-wrap');
-  if(sdrNome&&sdrNome!=='—'){sw.style.display='block';await loadPhoto(sdrNome,document.getElementById('sdr-img'),document.getElementById('sdr-init'))}
+  const sw=document.getElementById('sdr-slot');
+  if(sdrNome&&sdrNome!=='—'){sw.style.display='flex';await loadPhoto(sdrNome,document.getElementById('sdr-img'),document.getElementById('sdr-init'))}
   else sw.style.display='none';
 
   if(isNew)celebrar();
